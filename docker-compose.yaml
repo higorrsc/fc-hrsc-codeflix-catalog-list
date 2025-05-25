@@ -79,13 +79,16 @@ services:
 
   connect-setup:
     container_name: connect-setup
-    image: curlimages/curl
+    image: alpine:3.19
     volumes:
       - ./kafka-connect/bin:/kafka-connect/bin
     depends_on:
       connect:
         condition: service_healthy
-    command: [ "sh", "-c", "/kafka-connect/bin/connect-setup.sh" ]
+    command: >
+      sh -c "apk add --no-cache curl &&
+            chmod +x /kafka-connect/bin/connect-setup.sh &&
+            /kafka-connect/bin/connect-setup.sh"
     restart: "no"
 
   elasticsearch:
