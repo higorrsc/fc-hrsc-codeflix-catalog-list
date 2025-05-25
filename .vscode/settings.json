@@ -17,6 +17,7 @@
     "ipynb",
     "ipython",
     "jwks",
+    "LOGLEVEL",
     "mypy",
     "mysql",
     "mysqladmin",
