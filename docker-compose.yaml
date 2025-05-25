@@ -1,7 +1,7 @@
 services:
   mysql:
-    container_name: mysql
     hostname: mysql
+    container_name: mysql
     image: mysql:8.0
     environment:
       - MYSQL_ROOT_PASSWORD=root
@@ -76,6 +76,17 @@ services:
       - ./kafka-connect/connect-plugins:/kafka/extra-plugins
     ports:
       - "8083:8083"
+
+  connect-setup:
+    container_name: connect-setup
+    image: curlimages/curl
+    volumes:
+      - ./kafka-connect/bin:/kafka-connect/bin
+    depends_on:
+      connect:
+        condition: service_healthy
+    command: [ "sh", "-c", "/kafka-connect/bin/connect-setup.sh" ]
+    restart: "no"
 
   elasticsearch:
     hostname: elasticsearch

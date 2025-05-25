@@ -6,6 +6,7 @@
     "codeflix",
     "Codeflix",
     "Connor",
+    "curlimages",
     "cython",
     "Cython",
     "deadletterqueue",
@@ -51,7 +52,8 @@
     "venv",
     "viewsets",
     "webassets",
-    "Worthington"
+    "Worthington",
+    "xpack"
   ],
   "editor.codeActionsOnSave": {
     "source.addMissingImports": "always",
