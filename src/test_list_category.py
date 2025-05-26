@@ -189,6 +189,6 @@ class TestListCategory:
         with pytest.raises(ValueError):
             list_category.execute(
                 params=ListCategoryInput(
-                    sort="invalid_field",
+                    sort="invalid_field",  # type: ignore
                 )
             )
