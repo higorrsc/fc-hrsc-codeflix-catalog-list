@@ -60,7 +60,14 @@ class ElasticsearchCategoryRepository(CategoryRepository):
             List[Category]: A list of categories.
         """
 
-        response = self._client.search(index=ELASTICSEARCH_CATEGORY_INDEX, body={})
+        response = self._client.search(
+            index=ELASTICSEARCH_CATEGORY_INDEX,
+            body={
+                "sort": [{f"{sort}.keyword": {"order": direction}}] if sort else [],
+                "from": (page - 1) * per_page,
+                "size": per_page,
+            },
+        )
         category_hits = response.get("hits", {}).get("hits", [])
         parsed_categories: List[Category] = []
         for category in category_hits:
