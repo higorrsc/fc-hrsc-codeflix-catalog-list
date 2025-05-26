@@ -1,5 +1,6 @@
 {
   "cSpell.words": [
+    "addopts",
     "america",
     "autouse",
     "celerybeat",
@@ -17,6 +18,7 @@
     "github",
     "healthcheck",
     "htmlcov",
+    "importlib",
     "ipynb",
     "ipython",
     "jwks",
@@ -30,12 +32,14 @@
     "PKCS",
     "pybuilder",
     "pycache",
+    "pydantic",
     "pyenv",
     "pyflow",
     "pypa",
     "pypackages",
     "pypirc",
     "pytest",
+    "pythonpath",
     "pytype",
     "rabbitmq",
     "ropeproject",
@@ -87,5 +91,6 @@
     "--import-mode=importlib"
   ],
   "python.testing.unittestEnabled": false,
-  "python.testing.pytestEnabled": true
+  "python.testing.pytestEnabled": true,
+  "makefile.configureOnOpen": true
 }
