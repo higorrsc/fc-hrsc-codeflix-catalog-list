@@ -103,3 +103,92 @@ class TestListCategory:
             direction=SortDirection.ASC,
             search=None,
         )
+
+    def test_list_categories_with_custom_values(
+        self,
+        movie_category: Category,
+        series_category: Category,
+    ) -> None:
+        """
+        Should return a list of categories with custom values.
+
+        When calling ListCategory.execute with custom values, it should return a list of
+        categories with the custom values.
+
+        Args:
+            movie_category (Category): A Category instance representing a movie category.
+            series_category (Category): A Category instance representing a series category.
+
+        Returns:
+            None
+        """
+
+        repository = create_autospec(CategoryRepository)
+        repository.search.return_value = [
+            movie_category,
+            series_category,
+        ]
+
+        list_category = ListCategory(repository)
+        output = list_category.execute(
+            params=ListCategoryInput(
+                page=2,
+                per_page=10,
+                sort=SortableFields.DESCRIPTION,
+                direction=SortDirection.DESC,
+                search="test",
+            )
+        )
+
+        assert output.data == [
+            movie_category,
+            series_category,
+        ]
+
+        assert output.meta == ListCategoryOutputMeta(
+            page=2,
+            per_page=10,
+            sort="description",
+            direction="desc",  # type: ignore
+        )
+
+        repository.search.assert_called_once_with(
+            page=2,
+            per_page=10,
+            sort=SortableFields.DESCRIPTION,
+            direction=SortDirection.DESC,
+            search="test",
+        )
+
+    def test_list_categories_return_error_with_invalid_sort(
+        self,
+        movie_category: Category,
+        series_category: Category,
+    ) -> None:
+        """
+        Should raise an error when an invalid sort field is provided.
+
+        When calling ListCategory.execute with an invalid sort field, it should raise a ValueError.
+
+        Args:
+            movie_category (Category): A Category instance representing a movie category.
+            series_category (Category): A Category instance representing a series category.
+
+        Returns:
+            None
+        """
+
+        repository = create_autospec(CategoryRepository)
+        repository.search.return_value = [
+            movie_category,
+            series_category,
+        ]
+
+        list_category = ListCategory(repository)
+
+        with pytest.raises(ValueError):
+            list_category.execute(
+                params=ListCategoryInput(
+                    sort="invalid_field",
+                )
+            )
