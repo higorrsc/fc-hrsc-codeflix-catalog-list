@@ -15,6 +15,7 @@
     "dmypy",
     "dotenv",
     "Downey",
+    "fielddata",
     "github",
     "healthcheck",
     "htmlcov",
