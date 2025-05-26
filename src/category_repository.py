@@ -2,8 +2,8 @@ from abc import ABC, abstractmethod
 from enum import StrEnum
 from typing import List, Optional
 
+from src._shared.constants import DEFAULT_PAGINATION_SIZE
 from src.category import Category
-from src.constants import DEFAULT_PAGINATION_SIZE
 
 
 class SortDirection(StrEnum):

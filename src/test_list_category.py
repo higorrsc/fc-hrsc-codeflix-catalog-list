@@ -4,9 +4,9 @@ from uuid import uuid4
 
 import pytest
 
+from src._shared.constants import DEFAULT_PAGINATION_SIZE
 from src.category import Category
 from src.category_repository import CategoryRepository, SortDirection
-from src.constants import DEFAULT_PAGINATION_SIZE
 from src.list_category import (
     ListCategory,
     ListCategoryInput,
