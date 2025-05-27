@@ -66,6 +66,22 @@ class ElasticsearchCategoryRepository(CategoryRepository):
                 "sort": [{f"{sort}.keyword": {"order": direction}}] if sort else [],
                 "from": (page - 1) * per_page,
                 "size": per_page,
+                "query": {
+                    "bool": {
+                        "must": (
+                            [
+                                {
+                                    "multi_match": {
+                                        "query": search,
+                                        "fields": ["name^2", "description"],
+                                    }
+                                }
+                            ]
+                            if search
+                            else [{"match_all": {}}]
+                        )
+                    }
+                },
             },
         )
         category_hits = response.get("hits", {}).get("hits", [])

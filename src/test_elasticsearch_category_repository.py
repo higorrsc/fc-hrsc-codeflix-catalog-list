@@ -185,6 +185,47 @@ class TestSearch:
         assert repository.search() == [series_category]
         mock_logger.error.assert_called_once()
 
+    def test_when_search_term_matches_category_name_then_return_matching_entities(
+        self,
+        populated_es: Elasticsearch,
+        movie_category: Category,
+        series_category: Category,
+    ) -> None:
+        """
+        When the search term matches a category name, the repository should return matching
+        categories.
+
+        This test adds two categories to the Elasticsearch index, and verifies that the
+        ElasticsearchCategoryRepository returns the correct categories when searching for a
+        term that matches a category name.
+
+        Args:
+            populated_es (Elasticsearch): The Elasticsearch client fixture connected to the test
+                                          instance.
+            movie_category (Category): A Category instance representing a movie category.
+            series_category (Category): A Category instance representing a series category.
+
+        Returns:
+            None
+        """
+
+        repository = ElasticsearchCategoryRepository(populated_es)
+        result = repository.search(search="Filme")
+        assert result == [movie_category]
+
+        result = repository.search(search="Séries")
+        assert result == [series_category]
+
+        result = repository.search(
+            search="Categoria",
+            sort=SortableFields.NAME,
+            direction=SortDirection.ASC,
+        )
+        assert result == [
+            movie_category,
+            series_category,
+        ]
+
 
 class TestSort:
     """
