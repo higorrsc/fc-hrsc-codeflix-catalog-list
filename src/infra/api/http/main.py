@@ -1,8 +1,9 @@
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
 
 from src._shared.listing import ListOutput
 from src.application.list_category import ListCategory, ListCategoryInput
 from src.domain.category import Category
+from src.domain.category_repository import CategoryRepository
 from src.infra.elasticsearch.elasticsearch_category_repository import (
     ElasticsearchCategoryRepository,
 )
@@ -26,8 +27,26 @@ def healthcheck():
     return {"status": 200}
 
 
+def get_category_repository() -> ElasticsearchCategoryRepository:
+    """
+    Returns a new instance of the ElasticsearchCategoryRepository class.
+
+    This function is used by the app to create a new instance of the
+    ElasticsearchCategoryRepository class. It is intended to be used
+    as a dependency injection point for the ListCategory use case.
+
+    Returns:
+        ElasticsearchCategoryRepository: A new instance of the
+            ElasticsearchCategoryRepository class.
+    """
+
+    return ElasticsearchCategoryRepository()
+
+
 @app.get("/categories")
-def list_categories() -> ListOutput[Category]:
+def list_categories(
+    repository: CategoryRepository = Depends(get_category_repository),
+) -> ListOutput[Category]:
     """
     Retrieves a list of categories.
 
@@ -39,6 +58,6 @@ def list_categories() -> ListOutput[Category]:
         ListOutput[Category]: A structured list of categories.
     """
 
-    use_case = ListCategory(ElasticsearchCategoryRepository())
+    use_case = ListCategory(repository)
     response = use_case.execute(ListCategoryInput())
     return response
