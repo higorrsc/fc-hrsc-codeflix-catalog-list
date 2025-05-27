@@ -1,7 +1,14 @@
-from fastapi import Depends, FastAPI
+from typing import Optional
 
-from src._shared.listing import ListOutput
-from src.application.list_category import ListCategory, ListCategoryInput
+from fastapi import Depends, FastAPI, Query
+
+from src._shared.constants import DEFAULT_PAGINATION_SIZE
+from src._shared.listing import ListOutput, SortDirection
+from src.application.list_category import (
+    CategorySortableFields,
+    ListCategory,
+    ListCategoryInput,
+)
 from src.domain.category import Category
 from src.domain.category_repository import CategoryRepository
 from src.infra.elasticsearch.elasticsearch_category_repository import (
@@ -46,6 +53,29 @@ def get_category_repository() -> ElasticsearchCategoryRepository:
 @app.get("/categories")
 def list_categories(
     repository: CategoryRepository = Depends(get_category_repository),
+    search: Optional[str] = Query(
+        default=None,
+        description="Search term for name or description",
+    ),
+    page: int = Query(
+        default=1,
+        ge=1,
+        description="Page number",
+    ),
+    per_page: int = Query(
+        default=DEFAULT_PAGINATION_SIZE,
+        ge=1,
+        le=100,
+        description="Number of items per page",
+    ),
+    sort: CategorySortableFields = Query(
+        default=CategorySortableFields.NAME,
+        description="Field to sort by",
+    ),
+    direction: SortDirection = Query(
+        default=SortDirection.ASC,
+        description="Sort direction",
+    ),
 ) -> ListOutput[Category]:
     """
     Retrieves a list of categories.
@@ -59,5 +89,13 @@ def list_categories(
     """
 
     use_case = ListCategory(repository)
-    response = use_case.execute(ListCategoryInput())
+    response = use_case.execute(
+        ListCategoryInput(
+            page=page,
+            per_page=per_page,
+            sort=sort,
+            direction=direction,
+            search=search,
+        )
+    )
     return response
