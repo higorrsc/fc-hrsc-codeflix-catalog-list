@@ -1,26 +1,24 @@
-from datetime import datetime
-from uuid import UUID
-
-from pydantic import BaseModel
+from src._shared.domain.entity import Entity
 
 
-class Category(BaseModel):
+class Category(Entity):
     """
-    Category model representing a category in the system.
-    It includes an ID, name, description, and creation timestamp.
-
+    Represents a category in the system.
+    This class inherits from Entity and includes additional fields
+    specific to a category.
     Attributes:
-        - id (UUID): Unique identifier for the category.
-        - name (str): Name of the category.
-        - description (str): Description of the category.
-        - created_at (datetime): Timestamp when the category was created.
-        - updated_at (datetime): Timestamp when the category was last updated.
-        - is_active (bool): Indicates if the category is active.
+        name (str): The name of the category.
+        description (str): A brief description of the category.
+    Example:
+    category = Category(
+        id=UUID("12345678-1234-1234-1234-123456789012"),
+        created_at=datetime.now(),
+        updated_at=datetime.now(),
+        is_active=True,
+        name="Electronics",
+        description="Devices and gadgets related to electronics."
+    )
     """
 
-    id: UUID
     name: str
     description: str = ""
-    created_at: datetime
-    updated_at: datetime
-    is_active: bool
