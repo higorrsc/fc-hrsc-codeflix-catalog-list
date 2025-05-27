@@ -1,13 +1,26 @@
+x-elasticsearch-base: &elasticsearch-base
+  image: docker.elastic.co/elasticsearch/elasticsearch:8.13.4
+  environment:
+    - discovery.type=single-node
+    - xpack.security.enabled=false
+    - "ES_JAVA_OPTS=-Xms128m -Xmx128m"
+    - "indices.fielddata.cache.size=5%"
+  healthcheck:
+    test: [ "CMD", "curl", "-f", "http://localhost:9200" ]
+    interval: 30s
+    timeout: 10s
+    retries: 5
+
 services:
   mysql:
     hostname: mysql
     container_name: mysql
     image: mysql:8.0
     environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=codeflix
-      - MYSQL_USER=codeflix
-      - MYSQL_PASSWORD=codeflix
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: codeflix
+      MYSQL_USER: codeflix
+      MYSQL_PASSWORD: codeflix
     healthcheck:
       test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
       interval: 30s
@@ -53,7 +66,7 @@ services:
     container_name: connect
     image: quay.io/debezium/connect:2.5
     environment:
-      BOOTSTRAP_SERVERS: kafka:19092
+      BOOTSTRAP_SERVERS: kafka:19092 # Broker advertised listener
       GROUP_ID: 1
       CONFIG_STORAGE_TOPIC: my_connect_configs
       OFFSET_STORAGE_TOPIC: my_connect_offsets
@@ -92,36 +105,18 @@ services:
     restart: "no"
 
   elasticsearch:
-    hostname: elasticsearch
+    <<: *elasticsearch-base
     container_name: elasticsearch
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.4
-    environment:
-      - discovery.type=single-node
-      - xpack.security.enabled=false
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:9200" ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-    volumes:
-      - elasticsearch-data:/usr/share/elasticsearch/data
+    hostname: elasticsearch
     ports:
       - "9200:9200"
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
 
   elasticsearch-test:
-    hostname: elasticsearch-test
+    <<: *elasticsearch-base
     container_name: elasticsearch-test
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.4
-    environment:
-      - discovery.type=single-node
-      - xpack.security.enabled=false
-      - "ES_JAVA_OPTS=-Xms128m -Xmx128m"
-      - "indices.fielddata.cache.size=5%"
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:9200" ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
+    hostname: elasticsearch-test
     ports:
       - "9201:9200"
     profiles:
@@ -130,8 +125,8 @@ services:
   tests:
     build: .
     environment:
-      - PYTHONPATH="/app"
-      - ELASTICSEARCH_TEST_HOST="http://elasticsearch-test:9200"
+      PYTHONPATH: "/app"
+      ELASTICSEARCH_TEST_HOST: "http://elasticsearch-test:9200"
     container_name: tests
     command: [ "pytest", "-vv", "-s" ]
     depends_on:
