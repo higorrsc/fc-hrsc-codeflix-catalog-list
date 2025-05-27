@@ -37,7 +37,7 @@ class ListEntity[T: Entity]:
         entities: List[T] = self._repository.search(
             page=params.page,
             per_page=params.per_page,
-            sort=params.sort.value,
+            sort=params.sort.value,  # type: ignore
             direction=params.direction,
             search=params.search,
         )
@@ -45,7 +45,7 @@ class ListEntity[T: Entity]:
         meta = ListOutputMeta(
             page=params.page,
             per_page=params.per_page,
-            sort=params.sort.value,
+            sort=params.sort.value,  # type: ignore
             direction=params.direction,
         )
 

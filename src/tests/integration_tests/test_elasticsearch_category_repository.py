@@ -131,8 +131,8 @@ class TestSearch:
         series_category: Category,
     ) -> None:
         """
-        When the index has categories, the repository should return a list of mapped categories with the
-        default search
+        When the index has categories, the repository should return a list of mapped
+        categories with the default search
         """
 
         es.index(
