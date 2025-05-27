@@ -7,10 +7,12 @@ import pytest
 from elasticsearch import Elasticsearch
 
 from src._shared.constants import ELASTICSEARCH_CATEGORY_INDEX
-from src.category import Category
-from src.category_repository import SortDirection
-from src.elasticsearch_category_repository import ElasticsearchCategoryRepository
-from src.list_category import SortableFields
+from src.application.list_category import SortableFields
+from src.domain.category import Category
+from src.domain.category_repository import SortDirection
+from src.infra.elasticsearch.elasticsearch_category_repository import (
+    ElasticsearchCategoryRepository,
+)
 
 
 @pytest.fixture

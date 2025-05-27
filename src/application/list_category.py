@@ -4,8 +4,8 @@ from typing import List, Optional
 from pydantic import BaseModel
 
 from src._shared.constants import DEFAULT_PAGINATION_SIZE
-from src.category import Category
-from src.category_repository import CategoryRepository, SortDirection
+from src.domain.category import Category
+from src.domain.category_repository import CategoryRepository, SortDirection
 
 
 class SortableFields(StrEnum):

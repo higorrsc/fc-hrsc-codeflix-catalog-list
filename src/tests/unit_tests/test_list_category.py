@@ -5,14 +5,14 @@ from uuid import uuid4
 import pytest
 
 from src._shared.constants import DEFAULT_PAGINATION_SIZE
-from src.category import Category
-from src.category_repository import CategoryRepository, SortDirection
-from src.list_category import (
+from src.application.list_category import (
     ListCategory,
     ListCategoryInput,
     ListCategoryOutputMeta,
     SortableFields,
 )
+from src.domain.category import Category
+from src.domain.category_repository import CategoryRepository, SortDirection
 
 
 class TestListCategory:

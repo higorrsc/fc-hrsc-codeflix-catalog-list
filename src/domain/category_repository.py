@@ -3,7 +3,7 @@ from enum import StrEnum
 from typing import List, Optional
 
 from src._shared.constants import DEFAULT_PAGINATION_SIZE
-from src.category import Category
+from src.domain.category import Category
 
 
 class SortDirection(StrEnum):
