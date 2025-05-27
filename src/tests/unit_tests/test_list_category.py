@@ -5,14 +5,14 @@ from uuid import uuid4
 import pytest
 
 from src._shared.constants import DEFAULT_PAGINATION_SIZE
+from src._shared.listing import ListOutputMeta, SortDirection
 from src.application.list_category import (
+    CategorySortableFields,
     ListCategory,
     ListCategoryInput,
-    ListCategoryOutputMeta,
-    SortableFields,
 )
 from src.domain.category import Category
-from src.domain.category_repository import CategoryRepository, SortDirection
+from src.domain.category_repository import CategoryRepository
 
 
 class TestListCategory:
@@ -89,7 +89,7 @@ class TestListCategory:
             series_category,
         ]
 
-        assert output.meta == ListCategoryOutputMeta(
+        assert output.meta == ListOutputMeta(
             page=1,
             per_page=5,
             sort="name",
@@ -99,7 +99,7 @@ class TestListCategory:
         repository.search.assert_called_once_with(
             page=1,
             per_page=DEFAULT_PAGINATION_SIZE,
-            sort=SortableFields.NAME,
+            sort=CategorySortableFields.NAME,
             direction=SortDirection.ASC,
             search=None,
         )
@@ -134,7 +134,7 @@ class TestListCategory:
             params=ListCategoryInput(
                 page=2,
                 per_page=10,
-                sort=SortableFields.DESCRIPTION,
+                sort=CategorySortableFields.DESCRIPTION,
                 direction=SortDirection.DESC,
                 search="test",
             )
@@ -145,7 +145,7 @@ class TestListCategory:
             series_category,
         ]
 
-        assert output.meta == ListCategoryOutputMeta(
+        assert output.meta == ListOutputMeta(
             page=2,
             per_page=10,
             sort="description",
@@ -155,7 +155,7 @@ class TestListCategory:
         repository.search.assert_called_once_with(
             page=2,
             per_page=10,
-            sort=SortableFields.DESCRIPTION,
+            sort=CategorySortableFields.DESCRIPTION,
             direction=SortDirection.DESC,
             search="test",
         )

@@ -5,15 +5,13 @@ import pytest
 from elasticsearch import Elasticsearch
 
 from src._shared.constants import DEFAULT_PAGINATION_SIZE, ELASTICSEARCH_CATEGORY_INDEX
+from src._shared.listing import ListOutput, ListOutputMeta, SortDirection
 from src.application.list_category import (
+    CategorySortableFields,
     ListCategory,
     ListCategoryInput,
-    ListCategoryOutput,
-    ListCategoryOutputMeta,
-    SortableFields,
 )
 from src.domain.category import Category
-from src.domain.category_repository import SortDirection
 from src.infra.elasticsearch.elasticsearch_category_repository import (
     ElasticsearchCategoryRepository,
 )
@@ -160,24 +158,24 @@ class TestListCategory:
             movie_category,
             series_category,
         ]
-        assert output.meta == ListCategoryOutputMeta(
+        assert output.meta == ListOutputMeta(
             page=1,
             per_page=DEFAULT_PAGINATION_SIZE,
-            sort=SortableFields.NAME,
+            sort=CategorySortableFields.NAME,
             direction=SortDirection.ASC,
         )
         assert len(output.data) == 3
 
-        assert output == ListCategoryOutput(
+        assert output == ListOutput(
             data=[
                 documentary_category,
                 movie_category,
                 series_category,
             ],
-            meta=ListCategoryOutputMeta(
+            meta=ListOutputMeta(
                 page=1,
                 per_page=DEFAULT_PAGINATION_SIZE,
-                sort=SortableFields.NAME,
+                sort=CategorySortableFields.NAME,
                 direction=SortDirection.ASC,
             ),
         )
@@ -195,27 +193,27 @@ class TestListCategory:
             ListCategoryInput(
                 page=1,
                 per_page=1,
-                sort=SortableFields.NAME,
+                sort=CategorySortableFields.NAME,
                 direction=SortDirection.ASC,
                 search="Filme",
             )
         )
 
         assert output_page_1.data == [movie_category]
-        assert output_page_1.meta == ListCategoryOutputMeta(
+        assert output_page_1.meta == ListOutputMeta(
             page=1,
             per_page=1,
-            sort=SortableFields.NAME,
+            sort=CategorySortableFields.NAME,
             direction=SortDirection.ASC,
         )
         assert len(output_page_1.data) == 1
 
-        assert output_page_1 == ListCategoryOutput(
+        assert output_page_1 == ListOutput(
             data=[movie_category],
-            meta=ListCategoryOutputMeta(
+            meta=ListOutputMeta(
                 page=1,
                 per_page=1,
-                sort=SortableFields.NAME,
+                sort=CategorySortableFields.NAME,
                 direction=SortDirection.ASC,
             ),
         )
@@ -224,27 +222,27 @@ class TestListCategory:
             ListCategoryInput(
                 page=2,
                 per_page=1,
-                sort=SortableFields.NAME,
+                sort=CategorySortableFields.NAME,
                 direction=SortDirection.ASC,
                 search="Filme",
             )
         )
 
         assert output_page_2.data == []
-        assert output_page_2.meta == ListCategoryOutputMeta(
+        assert output_page_2.meta == ListOutputMeta(
             page=2,
             per_page=1,
-            sort=SortableFields.NAME,
+            sort=CategorySortableFields.NAME,
             direction=SortDirection.ASC,
         )
         assert len(output_page_2.data) == 0
 
-        assert output_page_2 == ListCategoryOutput(
+        assert output_page_2 == ListOutput(
             data=[],
-            meta=ListCategoryOutputMeta(
+            meta=ListOutputMeta(
                 page=2,
                 per_page=1,
-                sort=SortableFields.NAME,
+                sort=CategorySortableFields.NAME,
                 direction=SortDirection.ASC,
             ),
         )

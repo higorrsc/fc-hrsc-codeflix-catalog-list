@@ -7,9 +7,9 @@ import pytest
 from elasticsearch import Elasticsearch
 
 from src._shared.constants import ELASTICSEARCH_CATEGORY_INDEX
-from src.application.list_category import SortableFields
+from src._shared.listing import SortDirection
+from src.application.list_category import CategorySortableFields
 from src.domain.category import Category
-from src.domain.category_repository import SortDirection
 from src.infra.elasticsearch.elasticsearch_category_repository import (
     ElasticsearchCategoryRepository,
 )
@@ -220,7 +220,7 @@ class TestSearch:
 
         result = repository.search(
             search="Categoria",
-            sort=SortableFields.NAME,
+            sort=CategorySortableFields.NAME,
             direction=SortDirection.ASC,
         )
         assert result == [
@@ -291,7 +291,7 @@ class TestSort:
         """
         repository = ElasticsearchCategoryRepository(populated_es)
         result = repository.search(
-            sort=SortableFields.NAME,
+            sort=CategorySortableFields.NAME,
             direction=SortDirection.ASC,
         )
         assert len(result) == 2
@@ -327,7 +327,7 @@ class TestSort:
 
         repository = ElasticsearchCategoryRepository(populated_es)
         result = repository.search(
-            sort=SortableFields.NAME,
+            sort=CategorySortableFields.NAME,
             direction=SortDirection.DESC,
         )
         assert len(result) == 2
@@ -398,7 +398,7 @@ class TestPagination:
         result = repository.search(
             page=1,
             per_page=1,
-            sort=SortableFields.NAME,
+            sort=CategorySortableFields.NAME,
             direction=SortDirection.ASC,
         )
         assert result == [movie_category]
@@ -406,7 +406,7 @@ class TestPagination:
         result = repository.search(
             page=2,
             per_page=1,
-            sort=SortableFields.NAME,
+            sort=CategorySortableFields.NAME,
             direction=SortDirection.ASC,
         )
         assert result == [series_category]

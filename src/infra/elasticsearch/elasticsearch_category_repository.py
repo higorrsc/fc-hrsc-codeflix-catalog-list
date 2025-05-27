@@ -9,8 +9,9 @@ from src._shared.constants import (
     ELASTICSEARCH_CATEGORY_INDEX,
     ELASTICSEARCH_HOST,
 )
+from src._shared.listing import SortDirection
 from src.domain.category import Category
-from src.domain.category_repository import CategoryRepository, SortDirection
+from src.domain.category_repository import CategoryRepository
 
 
 class ElasticsearchCategoryRepository(CategoryRepository):
