@@ -26,6 +26,11 @@ series_category = Category(
 )
 
 
+@app.get("/healthcheck")
+def healthcheck():
+    return {"status": "ok"}
+
+
 @app.get("/categories")
 def list_categories():
     return {
