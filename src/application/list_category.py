@@ -1,8 +1,8 @@
 from enum import StrEnum
 from typing import Optional
 
+from src._shared.application.list_entity import ListEntity
 from src._shared.listing import ListInput
-from src.application.list_entity import ListEntity
 from src.domain.category import Category
 
 
