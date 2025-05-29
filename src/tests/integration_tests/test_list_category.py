@@ -1,10 +1,6 @@
-from datetime import datetime
-from uuid import uuid4
-
-import pytest
 from elasticsearch import Elasticsearch
 
-from src._shared.constants import DEFAULT_PAGINATION_SIZE, ELASTICSEARCH_CATEGORY_INDEX
+from src._shared.constants import DEFAULT_PAGINATION_SIZE
 from src._shared.listing import ListOutput, ListOutputMeta, SortDirection
 from src.application.list_category import (
     CategorySortableFields,
@@ -17,111 +13,6 @@ from src.infra.elasticsearch.elasticsearch_category_repository import (
 )
 
 
-@pytest.fixture
-def movie_category() -> Category:
-    """
-    Fixture that returns a Category instance representing a movie category.
-
-    Returns:
-        Category: A Category object with predefined attributes for testing.
-    """
-
-    return Category(
-        id=uuid4(),
-        name="Filme",
-        description="Categoria de filmes",
-        created_at=datetime.now(),
-        updated_at=datetime.now(),
-        is_active=True,
-    )
-
-
-@pytest.fixture
-def series_category() -> Category:
-    """
-    Fixture that returns a Category instance representing a series category.
-
-    Returns:
-        Category: A Category object with predefined attributes for testing.
-    """
-
-    return Category(
-        id=uuid4(),
-        name="Séries",
-        description="Categoria de séries",
-        created_at=datetime.now(),
-        updated_at=datetime.now(),
-        is_active=True,
-    )
-
-
-@pytest.fixture
-def documentary_category() -> Category:
-    """
-    Fixture that returns a Category instance representing a documentary category.
-
-    Returns:
-        Category: A Category object with predefined attributes for testing.
-    """
-
-    return Category(
-        id=uuid4(),
-        name="Documentários",
-        description="Categoria de documentários",
-        created_at=datetime.now(),
-        updated_at=datetime.now(),
-        is_active=True,
-    )
-
-
-@pytest.fixture
-def es() -> Elasticsearch:  # type: ignore
-    """
-    Fixture to create an Elasticsearch client connected to the test instance
-    """
-    elasticsearch_client = Elasticsearch(hosts=["http://localhost:9201"])
-    if not elasticsearch_client.indices.exists(index=ELASTICSEARCH_CATEGORY_INDEX):
-        elasticsearch_client.indices.create(index=ELASTICSEARCH_CATEGORY_INDEX)
-
-    yield elasticsearch_client  # type: ignore
-
-    elasticsearch_client.indices.delete(index=ELASTICSEARCH_CATEGORY_INDEX)
-
-
-@pytest.fixture
-def populated_es(
-    es: Elasticsearch,  # type: ignore
-    movie_category: Category,
-    series_category: Category,
-    documentary_category: Category,
-) -> Elasticsearch:  # type: ignore
-    """
-    Fixture to create an Elasticsearch client connected to the test instance
-    """
-
-    elasticsearch_client = es
-    elasticsearch_client.index(
-        index=ELASTICSEARCH_CATEGORY_INDEX,
-        id=str(movie_category.id),
-        body=movie_category.model_dump(mode="json"),
-        refresh=True,
-    )
-    elasticsearch_client.index(
-        index=ELASTICSEARCH_CATEGORY_INDEX,
-        id=str(series_category.id),
-        body=series_category.model_dump(mode="json"),
-        refresh=True,
-    )
-    elasticsearch_client.index(
-        index=ELASTICSEARCH_CATEGORY_INDEX,
-        id=str(documentary_category.id),
-        body=documentary_category.model_dump(mode="json"),
-        refresh=True,
-    )
-
-    return elasticsearch_client
-
-
 class TestListCategory:
     """
     Test suite for the ListCategory use case.
@@ -130,9 +21,9 @@ class TestListCategory:
     def test_list_categories_with_default_values(
         self,
         populated_es: Elasticsearch,
-        movie_category: Category,
-        series_category: Category,
-        documentary_category: Category,
+        movie: Category,
+        series: Category,
+        documentary: Category,
     ) -> None:
         """
         Should return a list of categories with default values.
@@ -154,9 +45,9 @@ class TestListCategory:
         output = list_category.execute(ListCategoryInput())
 
         assert output.data == [
-            documentary_category,
-            movie_category,
-            series_category,
+            documentary,
+            movie,
+            series,
         ]
         assert output.meta == ListOutputMeta(
             page=1,
@@ -168,9 +59,9 @@ class TestListCategory:
 
         assert output == ListOutput(
             data=[
-                documentary_category,
-                movie_category,
-                series_category,
+                documentary,
+                movie,
+                series,
             ],
             meta=ListOutputMeta(
                 page=1,
@@ -183,9 +74,9 @@ class TestListCategory:
     def test_list_categories_with_pagination_sorting_and_search(
         self,
         populated_es: Elasticsearch,
-        movie_category: Category,
-        series_category: Category,
-        documentary_category: Category,
+        movie: Category,
+        series: Category,
+        documentary: Category,
     ) -> None:
         list_category = ListCategory(ElasticsearchCategoryRepository(populated_es))
 
@@ -199,7 +90,7 @@ class TestListCategory:
             )
         )
 
-        assert output_page_1.data == [movie_category]
+        assert output_page_1.data == [movie]
         assert output_page_1.meta == ListOutputMeta(
             page=1,
             per_page=1,
@@ -209,7 +100,7 @@ class TestListCategory:
         assert len(output_page_1.data) == 1
 
         assert output_page_1 == ListOutput(
-            data=[movie_category],
+            data=[movie],
             meta=ListOutputMeta(
                 page=1,
                 per_page=1,
