@@ -4,7 +4,8 @@ import pytest
 from fastapi.testclient import TestClient
 
 from src.domain.category_repository import CategoryRepository
-from src.infra.api.http.main import app, get_category_repository
+from src.infra.api.http._shared.dependencies import get_category_repository
+from src.infra.api.http.main import app
 
 
 @pytest.fixture

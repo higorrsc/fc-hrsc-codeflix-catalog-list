@@ -1,6 +1,4 @@
-from datetime import datetime
 from unittest.mock import create_autospec
-from uuid import uuid4
 
 import pytest
 
@@ -20,46 +18,10 @@ class TestListCategory:
     Test suite for the ListCategory use case.
     """
 
-    @pytest.fixture
-    def movie_category(self) -> Category:
-        """
-        Fixture that returns a Category instance representing a movie category.
-
-        Returns:
-            Category: A Category object with predefined attributes for testing.
-        """
-
-        return Category(
-            id=uuid4(),
-            name="Filme",
-            description="Categoria de filmes",
-            created_at=datetime.now(),
-            updated_at=datetime.now(),
-            is_active=True,
-        )
-
-    @pytest.fixture
-    def series_category(self) -> Category:
-        """
-        Fixture that returns a Category instance representing a series category.
-
-        Returns:
-            Category: A Category object with predefined attributes for testing.
-        """
-
-        return Category(
-            id=uuid4(),
-            name="Séries",
-            description="Categoria de séries",
-            created_at=datetime.now(),
-            updated_at=datetime.now(),
-            is_active=True,
-        )
-
     def test_list_categories_with_default_values(
         self,
-        movie_category: Category,
-        series_category: Category,
+        movie: Category,
+        series: Category,
     ) -> None:
         """
         Should return a list of categories with default values.
@@ -68,8 +30,8 @@ class TestListCategory:
         categories with the default values.
 
         Args:
-            movie_category (Category): A Category instance representing a movie category.
-            series_category (Category): A Category instance representing a series category.
+            movie (Category): A Category instance representing a movie category.
+            series (Category): A Category instance representing a series category.
 
         Returns:
             None
@@ -77,16 +39,16 @@ class TestListCategory:
 
         repository = create_autospec(CategoryRepository)
         repository.search.return_value = [
-            movie_category,
-            series_category,
+            movie,
+            series,
         ]
 
         list_category = ListCategory(repository)
         output = list_category.execute(params=ListCategoryInput())
 
         assert output.data == [
-            movie_category,
-            series_category,
+            movie,
+            series,
         ]
 
         assert output.meta == ListOutputMeta(
@@ -106,8 +68,8 @@ class TestListCategory:
 
     def test_list_categories_with_custom_values(
         self,
-        movie_category: Category,
-        series_category: Category,
+        movie: Category,
+        series: Category,
     ) -> None:
         """
         Should return a list of categories with custom values.
@@ -116,8 +78,8 @@ class TestListCategory:
         categories with the custom values.
 
         Args:
-            movie_category (Category): A Category instance representing a movie category.
-            series_category (Category): A Category instance representing a series category.
+            movie (Category): A Category instance representing a movie category.
+            series (Category): A Category instance representing a series category.
 
         Returns:
             None
@@ -125,8 +87,8 @@ class TestListCategory:
 
         repository = create_autospec(CategoryRepository)
         repository.search.return_value = [
-            movie_category,
-            series_category,
+            movie,
+            series,
         ]
 
         list_category = ListCategory(repository)
@@ -141,8 +103,8 @@ class TestListCategory:
         )
 
         assert output.data == [
-            movie_category,
-            series_category,
+            movie,
+            series,
         ]
 
         assert output.meta == ListOutputMeta(
@@ -162,8 +124,8 @@ class TestListCategory:
 
     def test_list_categories_return_error_with_invalid_sort(
         self,
-        movie_category: Category,
-        series_category: Category,
+        movie: Category,
+        series: Category,
     ) -> None:
         """
         Should raise an error when an invalid sort field is provided.
@@ -171,8 +133,8 @@ class TestListCategory:
         When calling ListCategory.execute with an invalid sort field, it should raise a ValueError.
 
         Args:
-            movie_category (Category): A Category instance representing a movie category.
-            series_category (Category): A Category instance representing a series category.
+            movie (Category): A Category instance representing a movie category.
+            series (Category): A Category instance representing a series category.
 
         Returns:
             None
@@ -180,8 +142,8 @@ class TestListCategory:
 
         repository = create_autospec(CategoryRepository)
         repository.search.return_value = [
-            movie_category,
-            series_category,
+            movie,
+            series,
         ]
 
         list_category = ListCategory(repository)
