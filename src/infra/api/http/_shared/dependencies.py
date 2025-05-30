@@ -10,6 +10,9 @@ from src.infra.elasticsearch.elasticsearch_cast_member_repository import (
 from src.infra.elasticsearch.elasticsearch_category_repository import (
     ElasticsearchCategoryRepository,
 )
+from src.infra.elasticsearch.elasticsearch_genre_repository import (
+    ElasticsearchGenreRepository,
+)
 
 
 def common_query_params(
@@ -88,3 +91,19 @@ def get_cast_member_repository() -> ElasticsearchCastMemberRepository:
     """
 
     return ElasticsearchCastMemberRepository()
+
+
+def get_genre_repository() -> ElasticsearchGenreRepository:
+    """
+    Returns a new instance of the ElasticsearchGenreRepository class.
+
+    This function is used by the app to create a new instance of the
+    ElasticsearchGenreRepository class. It is intended to be used
+    as a dependency injection point for the ListGenre use case.
+
+    Returns:
+        ElasticsearchGenreRepository: A new instance of the
+            ElasticsearchGenreRepository class.
+    """
+
+    return ElasticsearchGenreRepository()
