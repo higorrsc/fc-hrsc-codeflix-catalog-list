@@ -10,6 +10,7 @@ from src._shared.constants import (
     ELASTICSEARCH_HOST,
 )
 from src._shared.listing import SortDirection
+from src.application.list_category import CategorySortableFields
 from src.domain.cast_member import CastMember
 from src.domain.cast_member_repository import CastMemberRepository
 
@@ -39,12 +40,12 @@ class ElasticsearchCastMemberRepository(CastMemberRepository):
         self._client = client or Elasticsearch(hosts=[ELASTICSEARCH_HOST])
         self._logger = logger or logging.getLogger(__name__)
 
-    def search(
+    def search(  # type: ignore
         self,
         page: int = 1,
         per_page: int = DEFAULT_PAGINATION_SIZE,
         search: Optional[str] = None,
-        sort: Optional[str] = None,
+        sort: Optional[CategorySortableFields] = None,
         direction: SortDirection = SortDirection.ASC,
     ) -> List[CastMember]:
         """
