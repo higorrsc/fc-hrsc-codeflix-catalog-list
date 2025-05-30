@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from src._shared.domain.entity import Entity
 
 
@@ -9,3 +11,4 @@ class Genre(Entity):
     """
 
     name: str
+    categories: set[UUID]
