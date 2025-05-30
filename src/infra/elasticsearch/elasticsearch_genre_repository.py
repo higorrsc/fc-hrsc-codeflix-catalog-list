@@ -1,11 +1,12 @@
 import logging
-from typing import List, Optional
+from typing import DefaultDict, Dict, List, Optional
 
 from elasticsearch import Elasticsearch
 from pydantic import ValidationError
 
 from src._shared.constants import (
     DEFAULT_PAGINATION_SIZE,
+    ELASTICSEARCH_GENRE_CATEGORIES_INDEX,
     ELASTICSEARCH_GENRE_INDEX,
     ELASTICSEARCH_HOST,
 )
@@ -87,12 +88,49 @@ class ElasticsearchGenreRepository(GenreRepository):
         )
         genre_hits = response.get("hits", {}).get("hits", [])
         parsed_genres: List[Genre] = []
+        genre_ids = [hits["_source"]["id"] for hits in genre_hits]
+        categories_for_genres = self.fetch_categories_for_genres(genre_ids)
         for genre in genre_hits:
             try:
-                parsed_genre = Genre(**genre["_source"], categories=set())
+                categories = categories_for_genres[genre["_source"]["id"]]
+                parsed_genre = Genre(
+                    **genre["_source"],
+                    categories=categories,  # type: ignore
+                )
             except ValidationError as e:
                 self._logger.error("Error parsing genres %s: %s", genre["_id"], e)
             else:
                 parsed_genres.append(parsed_genre)
 
         return parsed_genres
+
+    def fetch_categories_for_genres(self, genre_ids: List[str]) -> Dict[str, List[str]]:
+        """
+        Fetches the categories associated with the given list of genre ids.
+
+        Args:
+            genre_ids (List[str]): The list of genre ids to fetch categories for.
+
+        Returns:
+            Dict[str, List[str]]: A dictionary mapping each genre id to a list of its
+            associated category ids.
+        """
+
+        response = self._client.search(
+            index=ELASTICSEARCH_GENRE_CATEGORIES_INDEX,
+            body={
+                "query": {
+                    "terms": {
+                        "genre_id.keyword": genre_ids,
+                    },
+                },
+            },
+        )
+        category_hits = response.get("hits", {}).get("hits", [])
+        categories_by_genre = DefaultDict(list)
+        for hit in category_hits:
+            categories_by_genre[hit["_source"]["genre_id"]].append(
+                hit["_source"]["category_id"]
+            )
+
+        return categories_by_genre
