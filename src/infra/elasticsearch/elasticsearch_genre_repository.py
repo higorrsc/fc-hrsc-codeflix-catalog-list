@@ -94,8 +94,10 @@ class ElasticsearchGenreRepository(GenreRepository):
             try:
                 categories = categories_for_genres[genre["_source"]["id"]]
                 parsed_genre = Genre(
-                    **genre["_source"],
-                    categories=categories,  # type: ignore
+                    **{
+                        **genre["_source"],
+                        "categories": categories,
+                    }
                 )
             except ValidationError as e:
                 self._logger.error("Error parsing genres %s: %s", genre["_id"], e)

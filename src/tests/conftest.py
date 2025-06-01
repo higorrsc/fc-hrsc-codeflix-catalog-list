@@ -8,10 +8,13 @@ from elasticsearch import Elasticsearch
 from src._shared.constants import (
     ELASTICSEARCH_CAST_MEMBER_INDEX,
     ELASTICSEARCH_CATEGORY_INDEX,
+    ELASTICSEARCH_GENRE_CATEGORIES_INDEX,
+    ELASTICSEARCH_GENRE_INDEX,
     ELASTICSEARCH_HOST_TEST,
 )
 from src.domain.cast_member import CastMember, CastMemberType
 from src.domain.category import Category
+from src.domain.genre import Genre
 
 
 @pytest.fixture
@@ -32,10 +35,16 @@ def es() -> Generator[Elasticsearch, None, None]:
         client.indices.create(index=ELASTICSEARCH_CATEGORY_INDEX)
     if not client.indices.exists(index=ELASTICSEARCH_CAST_MEMBER_INDEX):
         client.indices.create(index=ELASTICSEARCH_CAST_MEMBER_INDEX)
+    if not client.indices.exists(index=ELASTICSEARCH_GENRE_INDEX):
+        client.indices.create(index=ELASTICSEARCH_GENRE_INDEX)
+    if not client.indices.exists(index=ELASTICSEARCH_GENRE_CATEGORIES_INDEX):
+        client.indices.create(index=ELASTICSEARCH_GENRE_CATEGORIES_INDEX)
     yield client
 
     client.indices.delete(index=ELASTICSEARCH_CATEGORY_INDEX)
     client.indices.delete(index=ELASTICSEARCH_CAST_MEMBER_INDEX)
+    client.indices.delete(index=ELASTICSEARCH_GENRE_INDEX)
+    client.indices.delete(index=ELASTICSEARCH_GENRE_CATEGORIES_INDEX)
 
 
 @pytest.fixture
@@ -134,6 +143,44 @@ def director() -> CastMember:
 
 
 @pytest.fixture
+def drama(movie: Category, series: Category) -> Genre:
+    """
+    Fixture that returns a Genre instance representing a drama genre.
+
+    Returns:
+        Genre: A Genre object with predefined attributes for testing.
+    """
+
+    return Genre(
+        id=uuid4(),
+        name="Gênero Drama",
+        categories={movie.id, series.id},
+        created_at=datetime.now(),
+        updated_at=datetime.now(),
+        is_active=True,
+    )
+
+
+@pytest.fixture
+def horror() -> Genre:
+    """
+    Fixture that returns a Genre instance representing a horror genre.
+
+    Returns:
+        Genre: A Genre object with predefined attributes for testing.
+    """
+
+    return Genre(
+        id=uuid4(),
+        name="Gênero Horror",
+        categories=set(),
+        created_at=datetime.now(),
+        updated_at=datetime.now(),
+        is_active=True,
+    )
+
+
+@pytest.fixture
 def populated_es(
     es: Elasticsearch,
     movie: Category,
@@ -141,23 +188,9 @@ def populated_es(
     documentary: Category,
     actor: CastMember,
     director: CastMember,
+    drama: Genre,
+    horror: Genre,
 ) -> Elasticsearch:
-    """
-    Fixture to create an Elasticsearch client connected to the test instance
-    with three categories pre-populated.
-
-    Args:
-        es (Elasticsearch): The Elasticsearch client fixture connected to the test
-                            instance.
-        movie (Category): A Category instance representing a movie category.
-        series (Category): A Category instance representing a series category.
-        documentary (Category): A Category instance representing a documentary category.
-
-    Returns:
-        Elasticsearch: The Elasticsearch client fixture connected to the test
-                       instance with three categories pre-populated.
-    """
-
     es.index(
         index=ELASTICSEARCH_CATEGORY_INDEX,
         id=str(movie.id),
@@ -186,6 +219,36 @@ def populated_es(
         index=ELASTICSEARCH_CAST_MEMBER_INDEX,
         id=str(director.id),
         body=director.model_dump(mode="json"),
+        refresh=True,
+    )
+    es.index(
+        index=ELASTICSEARCH_GENRE_INDEX,
+        id=str(drama.id),
+        body=drama.model_dump(mode="json"),
+        refresh=True,
+    )
+    es.index(
+        index=ELASTICSEARCH_GENRE_INDEX,
+        id=str(horror.id),
+        body=horror.model_dump(mode="json"),
+        refresh=True,
+    )
+    es.index(
+        index=ELASTICSEARCH_GENRE_CATEGORIES_INDEX,
+        id=str(drama.id),
+        body={
+            "genre_id": str(drama.id),
+            "category_id": str(movie.id),
+        },
+        refresh=True,
+    )
+    es.index(
+        index=ELASTICSEARCH_GENRE_CATEGORIES_INDEX,
+        id=str(drama.id),
+        body={
+            "genre_id": str(drama.id),
+            "category_id": str(series.id),
+        },
         refresh=True,
     )
 
