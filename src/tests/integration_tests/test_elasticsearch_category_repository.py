@@ -126,7 +126,7 @@ class TestSearch:
 
         result = repository.search(
             search="Categoria",
-            sort=CategorySortableFields.NAME,
+            sort=CategorySortableFields.NAME,  # type: ignore
             direction=SortDirection.ASC,
         )
         assert result == [
@@ -202,7 +202,7 @@ class TestSort:
         """
         repository = ElasticsearchCategoryRepository(populated_es)
         result = repository.search(
-            sort=CategorySortableFields.NAME,
+            sort=CategorySortableFields.NAME,  # type: ignore
             direction=SortDirection.ASC,
         )
         assert len(result) == 3
@@ -241,7 +241,7 @@ class TestSort:
 
         repository = ElasticsearchCategoryRepository(populated_es)
         result = repository.search(
-            sort=CategorySortableFields.NAME,
+            sort=CategorySortableFields.NAME,  # type: ignore
             direction=SortDirection.DESC,
         )
         assert len(result) == 3
@@ -293,7 +293,6 @@ class TestPagination:
         populated_es: Elasticsearch,
         documentary: Category,
         movie: Category,
-        series: Category,
     ) -> None:
         """
         Test that when a specific page is requested, the repository returns a paginated response.
@@ -307,7 +306,6 @@ class TestPagination:
                                         instance.
             documentary (Category): A Category instance representing a documentary category.
             movie (Category): A Category instance representing a movie category.
-            series (Category): A Category instance representing a series category.
 
         Returns:
             None
@@ -318,7 +316,7 @@ class TestPagination:
         result = repository.search(
             page=1,
             per_page=1,
-            sort=CategorySortableFields.NAME,
+            sort=CategorySortableFields.NAME,  # type: ignore
             direction=SortDirection.ASC,
         )
         assert result == [documentary]
@@ -326,7 +324,7 @@ class TestPagination:
         result = repository.search(
             page=2,
             per_page=1,
-            sort=CategorySortableFields.NAME,
+            sort=CategorySortableFields.NAME,  # type: ignore
             direction=SortDirection.ASC,
         )
         assert result == [movie]

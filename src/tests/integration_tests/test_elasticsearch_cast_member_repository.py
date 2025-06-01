@@ -122,7 +122,7 @@ class TestSearch:
 
         result = repository.search(
             search="Doe",
-            sort=CastMemberSortableFields.NAME,
+            sort=CastMemberSortableFields.NAME,  # type: ignore
             direction=SortDirection.ASC,
         )
         assert result == [
@@ -194,7 +194,7 @@ class TestSort:
         """
         repository = ElasticsearchCastMemberRepository(populated_es)
         result = repository.search(
-            sort=CastMemberSortableFields.NAME,
+            sort=CastMemberSortableFields.NAME,  # type: ignore
             direction=SortDirection.ASC,
         )
         assert len(result) == 2
@@ -231,7 +231,7 @@ class TestSort:
 
         repository = ElasticsearchCastMemberRepository(populated_es)
         result = repository.search(
-            sort=CastMemberSortableFields.NAME,
+            sort=CastMemberSortableFields.NAME,  # type: ignore
             direction=SortDirection.DESC,
         )
         assert len(result) == 2
@@ -303,7 +303,7 @@ class TestPagination:
         result = repository.search(
             page=1,
             per_page=1,
-            sort=CastMemberSortableFields.NAME,
+            sort=CastMemberSortableFields.NAME,  # type: ignore
             direction=SortDirection.ASC,
         )
         assert result == [director]
@@ -311,7 +311,7 @@ class TestPagination:
         result = repository.search(
             page=2,
             per_page=1,
-            sort=CastMemberSortableFields.NAME,
+            sort=CastMemberSortableFields.NAME,  # type: ignore
             direction=SortDirection.ASC,
         )
         assert result == [actor]
