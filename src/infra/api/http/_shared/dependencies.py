@@ -13,6 +13,9 @@ from src.infra.elasticsearch.elasticsearch_category_repository import (
 from src.infra.elasticsearch.elasticsearch_genre_repository import (
     ElasticsearchGenreRepository,
 )
+from src.infra.elasticsearch.elasticsearch_video_repository import (
+    ElasticsearchVideoRepository,
+)
 
 
 def common_query_params(
@@ -107,3 +110,19 @@ def get_genre_repository() -> ElasticsearchGenreRepository:
     """
 
     return ElasticsearchGenreRepository()
+
+
+def get_video_repository() -> ElasticsearchVideoRepository:
+    """
+    Returns a new instance of the ElasticsearchVideoRepository class.
+
+    This function is used by the app to create a new instance of the
+    ElasticsearchVideoRepository class. It is intended to be used
+    as a dependency injection point for the ListVideo use case.
+
+    Returns:
+        ElasticsearchVideoRepository: A new instance of the
+            ElasticsearchVideoRepository class.
+    """
+
+    return ElasticsearchVideoRepository()
