@@ -1,5 +1,6 @@
 import strawberry
 from strawberry.fastapi import GraphQLRouter
+from strawberry.schema.config import StrawberryConfig
 
 from src._shared.constants import DEFAULT_PAGINATION_SIZE
 from src._shared.listing import ListOutputMeta, SortDirection
@@ -85,5 +86,5 @@ class Query:
     categories: Result[CategoryGraphQL] = strawberry.field(resolver=get_categories)
 
 
-schema = strawberry.Schema(query=Query)
+schema = strawberry.Schema(query=Query, config=StrawberryConfig(auto_camel_case=False))
 graphql_app = GraphQLRouter(schema)
