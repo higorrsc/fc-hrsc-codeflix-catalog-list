@@ -14,6 +14,7 @@ from src.infra.api._shared.dependencies import (
     common_query_params,
     get_category_repository,
 )
+from src.infra.api.http.auth import authenticate
 
 router = APIRouter()
 
@@ -29,6 +30,7 @@ def list_categories(
         description="Field to sort by",
     ),
     query_params: Dict[str, Any] = Depends(common_query_params),
+    auth: None = Depends(authenticate),
 ) -> ListOutput[Category]:
     """
     Retrieves a list of categories.
