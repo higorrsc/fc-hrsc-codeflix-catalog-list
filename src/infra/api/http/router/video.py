@@ -40,11 +40,8 @@ def list_categories(
     use_case = ListVideo(repository)
     response = use_case.execute(
         ListVideoInput(
-            page=query_params["page"],
-            per_page=query_params["per_page"],
+            **query_params,
             sort=sort,
-            direction=query_params["direction"],
-            search=query_params["search"],
         )
     )
     return response
