@@ -6,10 +6,7 @@ from src._shared.listing import ListOutput
 from src.application.list_video import ListVideo, ListVideoInput, VideoSortableFields
 from src.domain.video import Video
 from src.domain.video_repository import VideoRepository
-from src.infra.api.http._shared.dependencies import (
-    common_query_params,
-    get_video_repository,
-)
+from src.infra.api._shared.dependencies import common_query_params, get_video_repository
 
 router = APIRouter()
 

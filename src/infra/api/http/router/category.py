@@ -10,7 +10,7 @@ from src.application.list_category import (
 )
 from src.domain.category import Category
 from src.domain.category_repository import CategoryRepository
-from src.infra.api.http._shared.dependencies import (
+from src.infra.api._shared.dependencies import (
     common_query_params,
     get_category_repository,
 )

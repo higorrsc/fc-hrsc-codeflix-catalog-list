@@ -6,7 +6,7 @@ from fastapi.testclient import TestClient
 
 from src.domain.cast_member import CastMember
 from src.domain.cast_member_repository import CastMemberRepository
-from src.infra.api.http._shared.dependencies import get_cast_member_repository
+from src.infra.api._shared.dependencies import get_cast_member_repository
 from src.infra.api.http.main import app
 from src.infra.elasticsearch.elasticsearch_cast_member_repository import (
     ElasticsearchCastMemberRepository,

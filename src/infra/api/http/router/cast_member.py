@@ -10,7 +10,7 @@ from src.application.list_cast_member import (
 )
 from src.domain.cast_member import CastMember
 from src.domain.cast_member_repository import CastMemberRepository
-from src.infra.api.http._shared.dependencies import (
+from src.infra.api._shared.dependencies import (
     common_query_params,
     get_cast_member_repository,
 )

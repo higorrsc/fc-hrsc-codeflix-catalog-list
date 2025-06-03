@@ -6,10 +6,7 @@ from src._shared.listing import ListOutput
 from src.application.list_genre import GenreSortableFields, ListGenre, ListGenreInput
 from src.domain.genre import Genre
 from src.domain.genre_repository import GenreRepository
-from src.infra.api.http._shared.dependencies import (
-    common_query_params,
-    get_genre_repository,
-)
+from src.infra.api._shared.dependencies import common_query_params, get_genre_repository
 
 router = APIRouter()
 
