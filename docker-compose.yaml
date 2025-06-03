@@ -153,7 +153,7 @@ services:
       ELASTICSEARCH_HOST: "http://elasticsearch:9200"
     ports:
       - "8000:8000"
-    command: fastapi dev src/infra/api/http/main.py --host 0.0.0.0 --port 8000 --reload;
+    command: fastapi dev src/infra/api/main.py --host 0.0.0.0 --port 8000 --reload;
     depends_on:
       elasticsearch:
         condition: service_healthy

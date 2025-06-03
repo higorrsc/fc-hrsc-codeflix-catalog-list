@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from src.infra.api.graphql.schema.schema import graphql_app as graphql_router
+from src.infra.api.graphql.schema.main import graphql_app as graphql_router
 from src.infra.api.http.router.cast_member import router as cast_member_router
 from src.infra.api.http.router.category import router as category_router
 from src.infra.api.http.router.genre import router as genre_router

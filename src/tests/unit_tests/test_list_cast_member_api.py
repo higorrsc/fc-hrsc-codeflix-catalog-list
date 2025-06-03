@@ -5,7 +5,7 @@ from fastapi.testclient import TestClient
 
 from src.domain.cast_member_repository import CastMemberRepository
 from src.infra.api._shared.dependencies import get_cast_member_repository
-from src.infra.api.http.main import app
+from src.infra.api.main import app
 
 
 @pytest.fixture
